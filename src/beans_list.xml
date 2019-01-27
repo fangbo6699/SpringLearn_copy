@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+	<!-- 若一个 bean 有多个构造器, 如何通过构造器来为 bean 的属性赋值 -->
+	<!-- 可以根据 index 和 value 进行更加精确的定位. (了解) -->
+	<bean id="car" class="com.fangbo.spring.helloworld.Car">
+		<constructor-arg value="KUGA" index="1"></constructor-arg>
+		<constructor-arg value="ChangAnFord" index="0"></constructor-arg>
+		<constructor-arg value="250000" type="float"></constructor-arg>
+
+	</bean>
+
+	<bean id="car1" class="com.fangbo.spring.helloworld.Car">
+		<constructor-arg value="ChangAnMazda"></constructor-arg>
+		<!-- 若字面值中包含特殊字符, 则可以使用 DCDATA 来进行赋值. (了解) -->
+		<constructor-arg>
+			<value><![CDATA[<ATARZA>！*&]]></value>
+		</constructor-arg>
+		<constructor-arg value="180" type="int"></constructor-arg>
+	</bean>
+
+	<bean id="perlist01" class="com.fangbo.spring.helloworld.PersonList">
+		<property name="name" value="xiayd"></property>
+		<property name="age" value="20" ></property>
+		<property name="car">
+			<list>
+				<ref bean="car"></ref>
+				<ref bean="car1"></ref>
+				<bean class="com.fangbo.spring.helloworld.Car">
+					<constructor-arg value="xiayd_gongsi"></constructor-arg>
+					<constructor-arg value="xiayd_brand"></constructor-arg>
+					<constructor-arg value="56" type="float"></constructor-arg>
+				</bean>
+			</list>
+		</property>
+
+	</bean>
+
+	<bean id="personmap01" class="com.fangbo.spring.helloworld.PersonMap">
+		<property name="name" value="xiongba"></property>
+		<property name="age" value="56"></property>
+		<property name="cars">
+			<map>
+				<entry key="firstcar" value-ref="car"></entry>
+				<entry key="secondcar" value-ref="car1"></entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="datasource" class="com.fangbo.spring.helloworld.DataSource">
+		<property name="properties">
+			<props>
+				<prop key="user">root</prop>
+				<prop key="password">123456</prop>
+				<prop key="jdbcurl">jdbc:mysql:///test</prop>
+				<prop key="jdbcdrive">com.jdbc.mysql.Driver</prop>
+			</props>
+		</property>
+
+	</bean>
+<!--不能将集合作为独立的 Bean 定义, 导致其他 Bean 无法引用该集合, 所以无法在不同 Bean 之间共享集合.
+-->
+	<util:list id="cars">
+		<ref bean="car"></ref>
+		<ref bean="car1"></ref>
+	</util:list>
+
+	<bean id="personlist02" class="com.fangbo.spring.helloworld.PersonList">
+		<property name="name" value="zhangfei"></property>
+		<property name="age" value="36"></property>
+		<property name="car" ref="cars"></property>
+
+	</bean>
+
+
+	<!--Spring 从 2.5 版本开始引入了一个新的 p 命名空间，可以通过 <bean> 元素属性的方式配置 Bean 的属性-->
+	<bean id="personlist03" class="com.fangbo.spring.helloworld.PersonList" p:name="xiangyu" p:age="69" p:car-ref="cars"></bean>
+
+
+
+
+
+	
+</beans>

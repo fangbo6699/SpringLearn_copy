@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+	<bean id="address" class="com.fangbo.spring.autowire.Address" p:province="shanghai" p:street="lujiazui">
+	</bean>
+
+	<bean id="car" class="com.fangbo.spring.autowire.Car" p:brand="baoma" p:price="500000">
+	</bean>
+
+	<!--<bean id="person" class="com.fangbo.spring.autowire.Person" p:name="fangbo" p:car-ref="car" p:address-ref="address">-->
+
+	<!--</bean>-->
+	<bean id="person" class="com.fangbo.spring.autowire.Person" p:name="bobo" autowire="byName">
+	</bean>
+
+	<!--子 Bean 从父 Bean 中继承配置, 包括 Bean 的属性配置
+	子 Bean 也可以覆盖从父 Bean 继承过来的配置,关键词parent
+	-->
+
+	<bean id="address01" class="com.fangbo.spring.autowire.Address" p:province="guizhou" p:street="guiyang"></bean>
+	<bean id="address02" class="com.fangbo.spring.autowire.Address" p:province="jiangsu" p:street="zhejiang"></bean>
+
+	<bean id="address03" parent="address01"></bean>
+
+	<!--子 Bean 也可以覆盖从父 Bean 继承过来的配置-->
+	<bean id="address04" parent="address02" p:province="guangdong"></bean>
+
+	<!--父 Bean 可以作为配置模板, 也可以作为 Bean 实例.
+	若只想把父 Bean 作为模板, 可以设置 <bean> 的abstract 属性为 true,
+	这样 Spring 将不会实例化这个 Bean
+	-->
+	<bean id="address05" class="com.fangbo.spring.autowire.Address"
+		  abstract="true" p:province="jiangxi" p:street="dadaokou">
+
+	</bean>
+	<bean id="address06" parent="address05"></bean>
+
+	<!--也可以忽略父 Bean 的 class 属性, 让子 Bean 指定自己的类,
+	而共享相同的属性配置. 但此时 abstract 必须设为 true
+	-->
+
+	<!--Spring 允许用户通过 depends-on 属性设定 Bean 前置依赖的Bean，
+	前置依赖的 Bean 会在本 Bean 实例化之前创建好
+	如果前置依赖于多个 Bean，则可以通过逗号，空格或的方式配置 Bean 的名称
+	-->
+
+	<bean id="address07" parent="address06" depends-on="car"></bean>
+	<!--bean 的作用域：singleton；prototype；WEB 环境作用域
+	-->
+	<bean id="address08" parent="address06" scope="prototype" depends-on="person"></bean>
+
+
+
+
+
+
+</beans>
